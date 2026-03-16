@@ -1,24 +1,11 @@
-name: Build Docker Image
+# Use base image
+FROM nginx:latest
 
-on:
-  push:
-    branches:
-      - main
+# Copy files from local machine to container
+COPY . /usr/share/nginx/html
 
-jobs:
-  build-image:
-    runs-on: ubuntu-latest
+# Expose port
+EXPOSE 80
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set Image Tag
-        run: echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
-
-      - name: Build Docker Image
-        run: |
-          docker build -t myapp:${IMAGE_TAG} .
-
-      - name: Verify Image
-        run: docker images
+# Start nginx 
+CMD ["nginx", "-g", "daemon off;"]
