@@ -7,7 +7,7 @@ FROM node:${NODE_VERSION}-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 COPY . .
 
