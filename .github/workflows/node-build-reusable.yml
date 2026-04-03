@@ -6,11 +6,16 @@ on:
       node-version:
         required: true
         type: string
+      environment:
+        required: true
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    # 👇 make env available to all steps
+    environment: ${{ inputs.environment }}
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,7 +25,15 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
           cache: 'npm'   # enables caching automatically
-
+	# 👇 Access env vars + secrets
+      - name: Show AWS Config
+        run: |
+          echo "Region: $AWS_REGION"
+          echo "Role: $AWS_ROLE_ARN"
+          
+        env:
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
       - name: Install & Test
         run: |
           npm install
