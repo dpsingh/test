@@ -19,10 +19,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install & Test
+        run: |
+          npm install
+          npm test
 
-      - name: Build app
-        run: npm run build
+      # Build Docker image with dynamic Node version
+      - name: Build Docker Image
+        run: |
+          docker build \
+            --build-arg NODE_VERSION=${{ inputs.node-version }} \
+            -t myapp:${{ inputs.node-version }} .
+
+      # Optional: Push to registry
+      - name: Tag Image
+        run: |
+          docker tag myapp:${{ inputs.node-version }} myrepo/myapp:${{ inputs.node-version }}
