@@ -1,0 +1,17 @@
+name: Sequential Node Builds (DRY)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-node-22:
+    uses: ./.github/workflows/node-build-reusable.yml
+    with:
+      node-version: "22"
+
+  build-node-24:
+    uses: ./.github/workflows/node-build-reusable.yml
+    needs: build-node-22   # 👈 sequential
+    with:
+      node-version: "24"
