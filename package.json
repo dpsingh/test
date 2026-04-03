@@ -1,11 +1,11 @@
 {
   "name": "nodejs-app",
   "version": "1.0.0",
-  "description": "Sample Node.js 20 App",
+  "description": "Sample Node.js 22 App",
   "main": "app.js",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "start": "node app.js",
