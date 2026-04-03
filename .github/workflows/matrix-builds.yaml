@@ -1,43 +1,38 @@
-name: Matrix Docker Build (Node 22 & 24)
+name: Matrix Build Example
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - develop
 
 jobs:
-  build:#
-    runs-on: ubuntu-latest
+  build:
+    name: Build & Test (Node ${{ matrix.node-version }} on ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
 
-    strategy:#
+    strategy:
+      fail-fast: false   # Don't cancel all jobs if one fails
       matrix:
+        os: [ubuntu-latest, windows-latest]
         node-version: [22, 24]
-
-    name: Build Node ${{ matrix.node-version }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4#
 
-      # Optional: Run tests outside Docker
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'   # 🔥 enables caching automatically
 
-      - name: Install & Test
-        run: |
-          npm install
-          npm test
+      - name: Install dependencies
+        run: npm install
 
-      # Build Docker image with dynamic# Node version
-      - name: Build Docker Image
-        run: |
-          docker build \
-            --build-arg NODE_VERSION=${{ matrix.node-version }} \
-            -t myapp:${{ matrix.node-version }} .
-
-      # Optional: Push to registry
-      - name: Tag Image
-        run: |
-          docker tag myapp:${{ matrix.node-version }} myrepo/myapp:${{ matrix.node-version }}
+      - name: Run tests
+        run: npm test
+#
+      - name: Build application
+        run: npm run build
