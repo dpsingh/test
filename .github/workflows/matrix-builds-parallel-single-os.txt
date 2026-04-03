@@ -5,10 +5,10 @@ on:
     branches: [main]
 
 jobs:
-  build:#
+  build:
     runs-on: ubuntu-latest
 
-    strategy:#
+    strategy:
       matrix:
         node-version: [22, 24]
 
@@ -23,14 +23,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'   # 🔥 enables caching automatically
 
       - name: Install & Test
         run: |
           npm install
           npm test
 
-      # Build Docker image with dynamic# Node version
+      # Build Docker image with dynamic Node version
       - name: Build Docker Image
         run: |
           docker build \
