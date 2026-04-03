@@ -13,6 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,10 +22,15 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
           cache: npm
-      - name: Show AWS Config
+          
+      - name: Debug variables
         run: |
-          echo "Region: $AWS_REGION"
-          echo "Role: $AWS_ROLE_ARN"
+          echo "Region is set?"
+          if [ -z "$AWS_REGION" ]; then echo "AWS_REGION EMPTY"; else echo "AWS_REGION OK"; fi
+
+          echo "Role is set?"
+          if [ -z "$AWS_ROLE_ARN" ]; then echo "AWS_ROLE_ARN EMPTY"; else echo "AWS_ROLE_ARN OK"; fi
+
         env:
           AWS_REGION: ${{ vars.AWS_REGION }}
           AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
