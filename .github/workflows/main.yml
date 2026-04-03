@@ -10,6 +10,7 @@ jobs:
     with:
       node-version: "22"
       environment: "staging"
+    secrets: inherit   # 👈 REQUIRED
 
   build-node-24:
     uses: ./.github/workflows/node-build-reusable.yml
@@ -17,3 +18,4 @@ jobs:
     with:
       node-version: "24"
       environment: "production"
+    secrets: inherit   # 👈 REQUIRED

@@ -22,7 +22,13 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
           cache: npm
-          
+
+      - name: Debug context
+        run: |
+          echo "ENV: ${{ inputs.environment }}"
+          echo "Vars context:"
+          echo "${{ toJson(vars) }}"
+
       - name: Debug variables
         run: |
           echo "Region is set?"
