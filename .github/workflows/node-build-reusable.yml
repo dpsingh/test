@@ -1,5 +1,5 @@
+---
 name: Reusable Node Build
-
 on:
   workflow_call:
     inputs:
@@ -9,28 +9,22 @@ on:
       environment:
         required: true
         type: string
-
 jobs:
   build:
     runs-on: ubuntu-latest
-    # 👇 make env available to all steps
     environment: ${{ inputs.environment }}
-      
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'npm'   # enables caching automatically
-	# 👇 Access env vars + secrets
+          cache: npm
       - name: Show AWS Config
         run: |
           echo "Region: $AWS_REGION"
           echo "Role: $AWS_ROLE_ARN"
-          
         env:
           AWS_REGION: ${{ vars.AWS_REGION }}
           AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
@@ -38,15 +32,13 @@ jobs:
         run: |
           npm install
           npm test
-
-      # Build Docker image with dynamic Node version
       - name: Build Docker Image
         run: |
           docker build \
             --build-arg NODE_VERSION=${{ inputs.node-version }} \
             -t myapp:${{ inputs.node-version }} .
-
-      # Optional: Push to registry
       - name: Tag Image
-        run: |
-          docker tag myapp:${{ inputs.node-version }} myrepo/myapp:${{ inputs.node-version }}
+        run: >
+          docker tag myapp:${{ inputs.node-version }} myrepo/myapp:${{
+          inputs.node-version }}
+
