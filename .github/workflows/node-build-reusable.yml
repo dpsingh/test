@@ -22,8 +22,8 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}   # 👈 commit SHA
 
     permissions:
-      id-token: write     # ✅ REQUIRED for OIDC
-      contents: read      # ✅ required for checkout
+      id-token: write     # ✅ REQUIRED for OIDC.
+      contents: read      # ✅ required for checkout.
 
     steps:
       - name: Checkout code
