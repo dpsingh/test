@@ -16,7 +16,7 @@ jobs:
 
     env:
       ACCOUNT_ID: 234085055363
-      REGION: ${{ secrets.AWS_REGION }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
       REPO: test
       IMAGE_TAG: ${{ github.sha }}   # 👈 commit SHA
