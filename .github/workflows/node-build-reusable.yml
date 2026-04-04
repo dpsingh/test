@@ -13,13 +13,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-
+    
     env:
       ACCOUNT_ID: 234085055363
       AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
       REPO: test
       IMAGE_TAG: ${{ github.sha }}   # 👈 commit SHA
+
+    permissions:
+      id-token: write     # ✅ REQUIRED for OIDC
+      contents: read      # ✅ required for checkout
 
     steps:
       - name: Checkout code
