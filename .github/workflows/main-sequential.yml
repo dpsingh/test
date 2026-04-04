@@ -1,0 +1,23 @@
+name: Sequential Node Builds (DRY)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  ec2-deploy:
+    uses: ./.github/workflows/ec2-reusable.yml
+    with:
+      environment: "staging"
+    secrets: inherit   # 👈 REQUIRED
+
+  #build-node-24:
+  #  uses: ./.github/workflows/node-build-reusable.yml
+  #  needs: build-node-22   # 👈 sequential
+  #  with:
+  #    node-version: "24"
+  #    environment: "production"
+  #  secrets: inherit   # 👈 REQUIRED
+  #  permissions:
+  #    id-token: write     # ✅ REQUIRED
+  #    contents: read
