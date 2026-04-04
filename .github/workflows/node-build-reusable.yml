@@ -13,10 +13,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    
+
+    env:
+      ACCOUNT_ID: 234085055363
+      REGION: ${{ secrets.AWS_REGION }}
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      REPO: test
+      IMAGE_TAG: ${{ github.sha }}   # 👈 commit SHA
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -34,24 +48,35 @@ jobs:
           echo "Region is set?"
           if [ -z "$AWS_REGION" ]; then echo "AWS_REGION EMPTY"; else echo "AWS_REGION OK"; fi
 
-          echo "Role is set?"
-          if [ -z "$AWS_ROLE_ARN" ]; then echo "AWS_ROLE_ARN EMPTY"; else echo "AWS_ROLE_ARN OK"; fi
-
-        env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+          echo "CAST_IP is set?"
+          if [ -z "$AWS_CAST_IP" ]; then echo "AWS_CAST_IP EMPTY"; else echo "AWS_CAST_IP OK"; fi
 
       - name: Install & Test
         run: |
           npm install
           npm test
+
       - name: Build Docker Image
         run: |
           docker build \
             --build-arg NODE_VERSION=${{ inputs.node-version }} \
             -t myapp:${{ inputs.node-version }} .
-      - name: Tag Image
-        run: >
-          docker tag myapp:${{ inputs.node-version }} myrepo/myapp:${{
-          inputs.node-version }}
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.REGION }}
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Tag Image for ECR
+        run: |
+          docker tag myapp:${{ inputs.node-version }} \
+          $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$REPO:${{ inputs.node-version }}-${IMAGE_TAG}
+
+      - name: Push Image to ECR
+        run: |
+          docker push \
+          $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$REPO:${{ inputs.node-version }}-${IMAGE_TAG}
