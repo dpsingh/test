@@ -11,6 +11,9 @@ jobs:
       node-version: "22"
       environment: "staging"
     secrets: inherit   # 👈 REQUIRED
+    permissions:
+      id-token: write     # ✅ REQUIRED
+      contents: read
 
   build-node-24:
     uses: ./.github/workflows/node-build-reusable.yml
@@ -19,3 +22,6 @@ jobs:
       node-version: "24"
       environment: "production"
     secrets: inherit   # 👈 REQUIRED
+    permissions:
+      id-token: write     # ✅ REQUIRED
+      contents: read
