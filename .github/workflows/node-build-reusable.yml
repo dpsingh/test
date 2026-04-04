@@ -78,9 +78,9 @@ jobs:
       - name: Tag Image for ECR
         run: |
           docker tag myapp:${{ inputs.node-version }} \
-          $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$REPO:${{ inputs.node-version }}-${IMAGE_TAG}
+          $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO:${{ inputs.node-version }}-${IMAGE_TAG}
 
       - name: Push Image to ECR
         run: |
           docker push \
-          $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$REPO:${{ inputs.node-version }}-${IMAGE_TAG}
+          $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO:${{ inputs.node-version }}-${IMAGE_TAG}
